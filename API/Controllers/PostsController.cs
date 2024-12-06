@@ -52,5 +52,31 @@ namespace API.Controllers{
             }
             throw new Exception("Error creating post");
         }
+
+        //update
+
+        [HttpPut(Name = "Update")]
+public ActionResult<Post> Update([FromBody] Post request)
+{
+    var post = _context.Posts.Find(request.Id);
+    if (post == null)
+    {
+        return NotFound("Could not find post");
+    }
+
+    post.Title = !string.IsNullOrEmpty(request.Title) ? request.Title : post.Title;
+    post.Body = !string.IsNullOrEmpty(request.Body) ? request.Body : post.Body;
+    post.Date = request.Date != DateTime.MinValue ? request.Date : post.Date;
+
+    var success = _context.SaveChanges() > 0;
+    if (success)
+    {
+        return Ok(post);
+    }
+
+    throw new Exception("Error updating post");
+}
+
+
     }
 }
